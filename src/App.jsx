@@ -92,6 +92,7 @@ function pct(part, total) {
 
 export default function App() {
   const [tab, setTab] = useState("live");
+  const [unlocked, setUnlocked] = useState(false);
   const [activeSection, setActiveSection] = useState(1);
   const [candidateFilter, setCandidateFilter] = useState("all");
   const [operator, setOperator] = useState(localStorage.getItem("operatorName") || "");
@@ -167,11 +168,18 @@ export default function App() {
     return { listTotals, totalVotes, counted, leader, prefTotals };
   }, [data]);
 
-  const resetAll = () => {
-    if (window.confirm("Azzerare tutti i dati live per tutti?")) {
-      saveData(emptyData());
-    }
-  };
+const resetAll = () => {
+  const pass = prompt("Password reset totale");
+
+  if (pass !== "1234") {
+    alert("Password errata");
+    return;
+  }
+
+  if (window.confirm("Azzerare tutti i dati live per tutti?")) {
+    saveData(emptyData());
+  }
+};
 
   return (
     <div className="app">
@@ -216,7 +224,25 @@ export default function App() {
 
       <nav className="tabs">
         <Tab active={tab === "live"} onClick={() => setTab("live")} icon={<BarChart3 />} label="Live" />
-        <Tab active={tab === "insert"} onClick={() => setTab("insert")} icon={<Save />} label="Inserisci" />
+        <Tab
+  active={tab === "insert"}
+  onClick={() => {
+    if (!unlocked) {
+      const pass = prompt("Password inserimento");
+
+      if (pass === "1234") {
+        setUnlocked(true);
+        setTab("insert");
+      } else {
+        alert("Password errata");
+      }
+    } else {
+      setTab("insert");
+    }
+  }}
+  icon={<Save />}
+  label="Inserisci"
+/>
         <Tab active={tab === "candidates"} onClick={() => setTab("candidates")} icon={<Users />} label="Candidati" />
         <Tab active={tab === "sections"} onClick={() => setTab("sections")} icon={<MapPin />} label="Seggi" />
       </nav>
