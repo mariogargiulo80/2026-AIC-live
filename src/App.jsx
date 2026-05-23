@@ -4,7 +4,7 @@ import { getDatabase, onValue, ref, set } from "firebase/database";
 import { BarChart3, Users, MapPin, Save, Trophy, RefreshCcw } from "lucide-react";
 import "./App.css";
 import logo from "./assets/AIC.jpg";
-
+const APP_VERSION = "v1.0.3";
 const firebaseConfig = {
   apiKey: "AIzaSyDnlv6pfjMcqBo55NhWiBevenyf5bNN018",
   authDomain: "spoglio-massa.firebaseapp.com",
@@ -193,7 +193,7 @@ const resetAll = () => {
               <h1>Spoglio Live</h1>
               <div className="status">
                 <span className="dot" />
-                {status} · ultimo aggiornamento: {data.updatedAt || "—"}
+                {status} · ultimo aggiornamento: {data.updatedAt || "—"} · {APP_VERSION}
               </div>
             </div>
           </div>
