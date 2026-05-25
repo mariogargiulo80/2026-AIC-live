@@ -13,7 +13,7 @@ import {
 import "./App.css";
 import logo from "./assets/AIC.jpg";
 
-const APP_VERSION = "v1.1.1";
+const APP_VERSION = "v1.1.2";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDnlv6pfjMcqBo55NhWiBevenyf5bNN018",
@@ -64,6 +64,7 @@ const sections = [
 ];
 
 const candidates = [
+
   { id: "fusillo", name: "Fusillo Alfonso", list: "azione" },
   { id: "siviero", name: "Siviero Angela", list: "azione" },
   { id: "espositoc", name: "Esposito Carla", list: "azione" },
@@ -98,7 +99,9 @@ const candidates = [
   { id: "minieri", name: "Minieri Gelsomina detta Mina", list: "insieme" },
   { id: "scolari", name: "Scolari Francesca Maria", list: "insieme" },
 ];
-
+candidates.sort((a, b) =>
+  a.name.localeCompare(b.name, "it")
+);
 const emptyData = () => ({
   updatedAt: null,
   updatedBy: "",
