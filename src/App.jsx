@@ -13,7 +13,7 @@ import {
 import "./App.css";
 import logo from "./assets/AIC.jpg";
 
-const APP_VERSION = "v1.0.5";
+const APP_VERSION = "v1.1.0";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDnlv6pfjMcqBo55NhWiBevenyf5bNN018",
@@ -65,9 +65,20 @@ const sections = [
 
 const candidates = [
   { id: "fusillo", name: "Fusillo Alfonso", list: "azione" },
+  { id: "siviero", name: "Siviero Angela", list: "azione" },
+  { id: "espositoc", name: "Esposito Carla", list: "azione" },
+  { id: "terminiello", name: "Terminiello Carmela", list: "azione" },
+  { id: "espositoa", name: "Esposito Antonina", list: "azione" },
+  { id: "celentano", name: "Celentano Carmen", list: "azione" },
   { id: "petagna", name: "Petagna Fabio", list: "azione" },
+  { id: "casa", name: "Casa Ferdinando", list: "azione" },
+  { id: "staianog", name: "Staiano Giovanna", list: "azione" },
+  { id: "apreda", name: "Apreda Giuseppe", list: "azione" },
+  { id: "smith", name: "Smith Ivan", list: "azione" },
+  { id: "espositolf", name: "Esposito Luigi Federico", list: "azione" },
   { id: "mandato", name: "Mandato Francesco", list: "azione" },
   { id: "mellino", name: "Mellino Maurizio", list: "azione" },
+  { id: "diprisco", name: "Di Prisco Pietro", list: "azione" },
   { id: "albano", name: "Albano Umberto", list: "azione" },
 
   { id: "bove", name: "Bove Pasquale", list: "insieme" },
@@ -75,6 +86,17 @@ const candidates = [
   { id: "cangiano", name: "Cangiano Salvatore", list: "insieme" },
   { id: "caputo", name: "Caputo Anna Maria", list: "insieme" },
   { id: "corcione", name: "Corcione Francesco Saverio", list: "insieme" },
+  { id: "degregorio", name: "De Gregorio Vittorio", list: "insieme" },
+  { id: "espositof", name: "Esposito Francesco", list: "insieme" },
+  { id: "espositog", name: "Esposito Giovanni", list: "insieme" },
+  { id: "fiorentino", name: "Fiorentino Luca", list: "insieme" },
+  { id: "gargiulomf", name: "Gargiulo Maria Francesca detta Checca", list: "insieme" },
+  { id: "gargiulos", name: "Gargiulo Salvatore detto Chichiullo", list: "insieme" },
+  { id: "iaccarino", name: "Iaccarino Dorina detta Dora", list: "insieme" },
+  { id: "manna", name: "Manna Giuseppe", list: "insieme" },
+  { id: "mazzella", name: "Mazzella Carolina", list: "insieme" },
+  { id: "minieri", name: "Minieri Gelsomina detta Mina", list: "insieme" },
+  { id: "scolari", name: "Scolari Francesca Maria", list: "insieme" },
 ];
 
 const emptyData = () => ({
@@ -653,42 +675,70 @@ export default function App() {
         )}
 
         {tab === "candidates" && (
-          <section className="card">
-            <h2>
-              <Users size={28} />
-              Classifica candidati
-            </h2>
+  <div className="stack">
+    {lists.map((l) => {
+      const rows = totals.prefTotals.filter(
+        (c) => c.list === l.id
+      );
 
-            {totals.prefTotals.map(
-              (c, i) => (
-                <div
-                  className="candidate-row"
-                  key={c.id}
-                >
-                  <div>
-                    <h3>
-                      #{i + 1} {c.name}
-                    </h3>
+      const isWinner =
+        totals.listTotals["azione"] >
+        totals.listTotals["insieme"]
+          ? l.id === "azione"
+          : l.id === "insieme";
 
-                    <p>
-                      {
-                        lists.find(
-                          (l) =>
-                            l.id ===
-                            c.list
-                        )?.name
-                      }
-                    </p>
-                  </div>
+      return (
+        <section className="card" key={l.id}>
+          <h2>
+            <Users size={28} />
+            Preferenze · {l.name}
+          </h2>
 
-                  <strong>
-                    {c.votes}
-                  </strong>
-                </div>
-              )
-            )}
-          </section>
-        )}
+          {rows.map((c, i) => (
+            <div
+              className="candidate-row"
+              key={c.id}
+            >
+              <div>
+                <h3>
+                  #{i + 1} {c.name}
+
+                  {isWinner && i < 10 && (
+                    <span
+                      style={{
+                        marginLeft: "10px",
+                        color: "#16a34a",
+                        fontSize: "14px",
+                        fontWeight: 700,
+                      }}
+                    >
+                      • ELETTO
+                    </span>
+                  )}
+
+                  {!isWinner && i < 5 && (
+                    <span
+                      style={{
+                        marginLeft: "10px",
+                        color: "#2563eb",
+                        fontSize: "14px",
+                        fontWeight: 700,
+                      }}
+                    >
+                      • OPPOSIZIONE
+                    </span>
+                  )}
+                </h3>
+              </div>
+
+              <strong>{c.votes}</strong>
+            </div>
+          ))}
+        </section>
+      );
+    })}
+  </div>
+)}
 
         {tab === "sections" && (
           <section className="card">
@@ -697,22 +747,62 @@ export default function App() {
               Seggi
             </h2>
 
-            {sections.map((s) => (
-              <div
-                className="candidate-row"
-                key={s.id}
-              >
-                <div>
-                  <h3>
-                    Seggio {s.id}
-                  </h3>
+            {sections.map((s) => {
+  const azione = toNum(data.listVotes?.[`${s.id}_azione`]);
+  const insieme = toNum(data.listVotes?.[`${s.id}_insieme`]);
 
-                  <p>{s.zona}</p>
-                </div>
+  const totale = azione + insieme;
 
-                <strong>{s.ref}</strong>
-              </div>
-            ))}
+  const rows = [
+    {
+      name: "Azione in Comune",
+      votes: azione,
+      color: "#f97316",
+    },
+    {
+      name: "Insieme per Massa Lubrense",
+      votes: insieme,
+      color: "#2563eb",
+    },
+  ].sort((a, b) => b.votes - a.votes);
+
+  return (
+    <div
+      className="candidate-row"
+      key={s.id}
+    >
+      <div>
+        <h3>
+          Seggio {s.id} · {s.zona}
+        </h3>
+
+        <p>
+          Responsabile: {s.ref}
+        </p>
+
+        {rows.map((r) => (
+          <p key={r.name}>
+            <strong
+              style={{ color: r.color }}
+            >
+              {r.name}
+            </strong>
+            : {r.votes} voti ·{" "}
+            {totale > 0
+              ? (
+                  (r.votes / totale) *
+                  100
+                ).toFixed(1)
+              : "0.0"}
+            %
+          </p>
+        ))}
+      </div>
+
+      <strong>{totale}</strong>
+    </div>
+  );
+})}
           </section>
         )}
 
