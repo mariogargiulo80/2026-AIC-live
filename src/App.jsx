@@ -13,7 +13,7 @@ import {
 import "./App.css";
 import logo from "./assets/AIC.jpg";
 
-const APP_VERSION = "v1.1.2";
+const APP_VERSION = "v1.1.4";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDnlv6pfjMcqBo55NhWiBevenyf5bNN018",
@@ -170,33 +170,33 @@ export default function App() {
     set(liveRef, payload);
   };
 
-  const setListVote = (
-    sectionId,
-    listId,
-    value
-  ) => {
-    saveData({
-      ...data,
-      listVotes: {
-        ...data.listVotes,
-        [`${sectionId}_${listId}`]: value,
-      },
-    });
-  };
+const setListVote = (sectionId, listId, value) => {
+  saveData({
+    ...data,
+    listVotes: {
+      ...data.listVotes,
+      [`${sectionId}_${listId}`]: value,
+    },
+    sectionUpdates: {
+      ...(data.sectionUpdates || {}),
+      [sectionId]: new Date().toLocaleString("it-IT"),
+    },
+  });
+};
 
-  const setPrefVote = (
-    sectionId,
-    candId,
-    value
-  ) => {
-    saveData({
-      ...data,
-      prefVotes: {
-        ...data.prefVotes,
-        [`${sectionId}_${candId}`]: value,
-      },
-    });
-  };
+const setPrefVote = (sectionId, candId, value) => {
+  saveData({
+    ...data,
+    prefVotes: {
+      ...data.prefVotes,
+      [`${sectionId}_${candId}`]: value,
+    },
+    sectionUpdates: {
+      ...(data.sectionUpdates || {}),
+      [sectionId]: new Date().toLocaleString("it-IT"),
+    },
+  });
+};
 
   const totals = useMemo(() => {
     const listTotals = Object.fromEntries(
@@ -779,9 +779,20 @@ export default function App() {
           Seggio {s.id} · {s.zona}
         </h3>
 
-        <p>
-          Responsabile: {s.ref}
-        </p>
+       <p>
+  Responsabile: {s.ref}
+</p>
+
+<p
+  style={{
+    fontSize: "13px",
+    opacity: 0.7,
+    marginTop: "4px",
+  }}
+>
+  Ultimo aggiornamento:{" "}
+  {data.sectionUpdates?.[s.id] || "--"}
+</p>
 
         {rows.map((r) => (
           <p key={r.name}>
