@@ -265,7 +265,7 @@ export default function App() {
       "Password reset totale"
     );
 
-    if (pass !== PASSWORD) {
+    if (pass !== "4321") {
       alert("Password errata");
       return;
     }
