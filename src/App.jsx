@@ -13,7 +13,7 @@ import {
 import "./App.css";
 import logo from "./assets/AIC.jpg";
 
-const APP_VERSION = "v1.1.0";
+const APP_VERSION = "v1.1.1";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDnlv6pfjMcqBo55NhWiBevenyf5bNN018",
